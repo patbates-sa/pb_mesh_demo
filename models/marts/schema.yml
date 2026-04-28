@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: market_customers
+    description: "Thin wrapper over the upstream public `dim_customers` model in the `pb_jaffle_shop` project."
