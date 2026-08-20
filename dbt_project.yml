@@ -39,4 +39,4 @@ models:
   pb_mesh_demo:
     # Applies to all files under models/marts
     marts:
-      +materialized: view
+      +materialized: table
