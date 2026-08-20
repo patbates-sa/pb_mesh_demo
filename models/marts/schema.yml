@@ -2,4 +2,64 @@ version: 2
 
 models:
   - name: market_customers
-    description: "Thin wrapper over the upstream public `dim_customers` model in the `pb_jaffle_shop` project."
+    description: >
+      Customer-level interface to the public `pb_jaffle_shop.dim_customers`
+      model. One row per customer, including customers with no orders. This
+      model keeps the cross-project ref isolated from downstream marts and
+      exposes only the customer attributes and order summaries used locally.
+    columns:
+      - name: customer_id
+        description: Stable identifier for the customer and the grain of the model.
+
+      - name: first_name
+        description: Customer's first name as published by the upstream customer dimension.
+
+      - name: last_name
+        description: >
+          Customer's last name as published by the upstream customer dimension;
+          the source may provide an abbreviated value.
+
+      - name: lifetime_value
+        description: >
+          Upstream-calculated cumulative value associated with the customer's
+          orders. Null when the customer has no orders.
+
+      - name: most_recent_order_date
+        description: Date of the customer's latest order; null when the customer has no orders.
+
+      - name: number_of_orders
+        description: Number of orders attributed to the customer, with zero representing no orders.
+
+  - name: cust_facts
+    description: >
+      Consumer-facing customer facts sourced from `market_customers`. One row
+      per customer, including customers with no orders. The model currently
+      preserves the interface model's columns while providing a stable local
+      ref for downstream analytics.
+    columns:
+      - name: customer_id
+        description: Primary key for the customer-grain mart.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        description: Customer's first name as published by the upstream customer dimension.
+
+      - name: last_name
+        description: >
+          Customer's last name as published by the upstream customer dimension;
+          the source may provide an abbreviated value.
+
+      - name: lifetime_value
+        description: >
+          Upstream-calculated cumulative value associated with the customer's
+          orders. Null when the customer has no orders.
+
+      - name: most_recent_order_date
+        description: Date of the customer's latest order; null when the customer has no orders.
+
+      - name: number_of_orders
+        description: Number of orders attributed to the customer, with zero representing no orders.
+        data_tests:
+          - not_null
